@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2010 Eamonn O'Brien-Strain, eob@well.com
  * All rights reserved. This program and the accompanying materials
@@ -20,6 +19,8 @@ case class RichMatrix(m:Matrix){
 
   def *(that:RichMatrix) = mXm( this.m, that.m )
 
+  def apply(i:Int,j:Int) = m(i)(j)
+
   def rowCount = m.length
   def colCount = m.head.length
 
@@ -36,7 +37,7 @@ object Matrix{
   /** A convenient alias */
   type Matrix = List[Row]
 
-  def apply( rowCount:Int, colCount:Int, f:(Int,Int) => Double ) = (
+  def apply( rowCount:Int, colCount:Int )( f:(Int,Int) => Double ) = (
       for(i <- 1 to rowCount) yield 
 	( for( j <- 1 to colCount) yield f(i,j) ).toList
     ).toList
@@ -49,17 +50,26 @@ object Matrix{
     m.map{ dotProd(_,v) } reduceLeft ( _ + _ )
   }
 
-  def mXm(m1:Matrix,m2:Matrix) = 
-    for( m1row <- m1 ) yield
-      for( m2col <- transpose(m2) ) yield
-	dotProd( m1row, m2col )
+  def mXm(m1:Matrix,m2:Matrix) = {
+    requireEquals( colCount(m1), rowCount(m2) )
+    ensure(
+      (m:Matrix) => rowCount(m)==rowCount(m1) && colCount(m)==colCount(m2),
+
+      for( m1row <- m1 ) yield
+	for( m2col <- transpose(m2) ) yield
+	  dotProd( m1row, m2col )
+
+
+    )
+      
+  }
 
   def rowCount(m:Matrix) = m.length
   def colCount(m:Matrix) = m.head.length
 
 
   /** effectively add RichMatrix methods to List[List[Double]] */
-  implicit def pimp1(m:Matrix)  = new RichMatrix(m)
+  implicit def pimp1(m:Matrix) = new RichMatrix(m)
 
   implicit def pimp2(m:List[Projection[Double]]) 
     = new RichMatrix(m.map{_.toList})
@@ -67,6 +77,4 @@ object Matrix{
     = new RichMatrix(m.toList)
   implicit def pimp2(m:Projection[Projection[Double]]) 
     = new RichMatrix(m.map{_.toList}.toList)
-  
-
 }

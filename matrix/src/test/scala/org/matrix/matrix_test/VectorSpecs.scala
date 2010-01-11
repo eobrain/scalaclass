@@ -8,7 +8,7 @@
 package org.eamonn.matrix_test
 
 import util.Contract.checkPreconditions
-import published_matrix.Row._
+import matrix.Row._
 import org.specs._
 
 object  VectorSpecs extends Specification {
