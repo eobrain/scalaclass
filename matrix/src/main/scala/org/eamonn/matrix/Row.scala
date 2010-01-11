@@ -10,13 +10,13 @@ package org.eamonn.matrix
 import Row._
 
 /** Methods that are added to List[Double] by an implicit conversion */
-class RichRow(v:Row){
+case class RichRow(v:Row){
 
   /** dot product */
-  def *(v2:Row)   = dotProd( v, v2 )
+  def *(that:RichRow)   = dotProd( this.v, that.v )
 
   /** vector addition */
-  def add(v2:Row) = vPlusV( v, v2 )
+  def add(that:RichRow) = vPlusV( this.v, that.v )
 
   /** convert to column vector */
   def T = v.map{ List(_) }
@@ -28,24 +28,18 @@ class RichRow(v:Row){
 
 
 object Row{
-  import util.Contract._
 
   /** A convenient alias */
   type Row = List[Double]
 
 
-  def dotProd(v1:Row,v2:Row) = {
-    requireEquals( v1.length, v2.length )
+  def dotProd(v1:Row,v2:Row) = 
     v1.zip( v2 ).map{ t:(Double,Double) => t._1 * t._2 }.reduceLeft(_ + _)
-  }
 
-  def vPlusV(v1:Row,v2:Row) = {
-    requireEquals( v1.length, v2.length )
+  def vPlusV(v1:Row,v2:Row) =
     v1.zip( v2 ).map{ t:(Double,Double) => t._1 + t._2 }
-  }
 
   /** effectively add RichRow methods to List[Double] */
-  implicit def pimpRow(v:Row) = new RichRow(v)
-
+  implicit def pimp(v:Row) = new RichRow(v)
 
 }

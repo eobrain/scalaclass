@@ -8,12 +8,14 @@
 package org.eamonn.matrix_test
 
 import util.Contract._
-import matrix.Matrix._
-import matrix.Row._
+import published_matrix.Matrix
+import published_matrix.Row._
 import org.specs._
+import Matrix._
 
 object  MatrixSpecs extends Specification {
   checkPreconditions = true
+  checkPostconditions = true
 
   val M = List(
     List( 1.0, 2.0, 3.0 ),
@@ -63,6 +65,25 @@ object  MatrixSpecs extends Specification {
 		 List(  4.0, -1.0, 0.0 ),
 		 List(  5.0, -1.0, 2.0 ))
     A * B  must_==  C
+  }
+
+  "can handle big matrices" in {
+    val m100x200 = Matrix( 100, 200, { (i:Int,j:Int) => Math.random} )
+    m100x200.rowCount must_== 100
+    m100x200.colCount must_== 200
+    val m200x300 = Matrix( 200, 300, { (i:Int,j:Int) => Math.random} )
+    m200x300.rowCount  must_==  200
+    m200x300.colCount  must_==  300
+    val m100x300  = m100x200 * m200x300
+    m100x300.toList.rowCount must_== 100
+    m100x300.toList.colCount must_== 300
+  }
+
+  "multiplying by the identity matrix gives you the original matrix" in {
+    val m5 = Matrix( 5, 5, { (i:Int,j:Int) => Math.random} )
+    val I5 = Matrix( 5, 5, { (i:Int,j:Int) => if(i==j) 1.0 else 0.0} )
+    m5 * I5  must_==  m5
+    I5 * m5  must_==  m5
   }
 
 }
