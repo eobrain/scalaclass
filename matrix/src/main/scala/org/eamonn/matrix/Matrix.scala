@@ -42,7 +42,16 @@ object Matrix{
 
   def mXm(m1:Matrix,m2:Matrix) = {
     requireEquals( colCount(m1), rowCount(m2) )
-    transpose(m2).map{ mXv(m1,_) } reduceLeft ( _ + _ )
+    ensure(
+      (m:Matrix) => rowCount(m)==rowCount(m1) && colCount(m)==colCount(m2),
+
+      for( m1row <- m1 ) yield
+	for( m2col <- transpose(m2) ) yield
+	  dotProd( m1row, m2col )
+
+
+    )
+      
   }
 
   def rowCount(m:Matrix) = m.length
@@ -50,6 +59,6 @@ object Matrix{
 
 
   /** effectively add RichMatrix methods to List[List[Double]] */
-  implicit def pimpMatrix(v:Matrix) = new RichMatrix(v)
+  implicit def pimp1(m:Matrix) = new RichMatrix(m)
 
 }
