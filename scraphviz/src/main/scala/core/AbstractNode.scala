@@ -10,7 +10,7 @@ abstract class AbstractNode( graph:AbstractGraph, name:String ) extends HasAtts{
 
 	graph add this
 
-	def shape(sh:String) = { att("shape",sh); this }
+	def shape(sh:Symbol) = { att('shape,sh); this }
 
 	override def toString = "\""+name+"\""
 	def declaration = this+" "+atts

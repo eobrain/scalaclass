@@ -9,16 +9,16 @@ import core.DiNode
 
 class UmlNode(graph:Uml,label:String) extends DiNode(graph,label){
 
-	shape("record")
+	shape('record)
 
 	def <>-(that:UmlNode) = {
-		this -> that arrowtail "diamond" arrowhead "none"
+		this -> that arrowtail 'diamond arrowhead 'none
 		that
 	}
 	def -<>(that:UmlNode) = {that <>- this; that}
 
 	def <|-(that:UmlNode) = {
-		(that -> this) arrowhead "onormal" arrowtail "none" arrowsize 2
+		(that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2
 		that
 	}
 
@@ -26,7 +26,7 @@ class UmlNode(graph:Uml,label:String) extends DiNode(graph,label){
 
 
 	def -->(that:UmlNode) = {
-		(this -> that) arrowhead "vee" style "dashed"
+		(this -> that) arrowhead 'vee style 'dashed
 		that
 	} 
 

@@ -8,11 +8,11 @@ package org.eamonn.scraphviz.core
 class DiEdge(g:AbstractGraph, from:DiNode, to:DiNode) 
 	extends AbstractEdge(g,from,to)
 {
-	override def toString =  from+" -> "+to+" "+atts
+  override def toString =  from+" -> "+to+" "+atts
 
 
-	def arrowhead(s:String) = { att( "arrowhead", s ); this }
-	def arrowtail(s:String) = { att( "arrowtail", s ); this }
-	def arrowsize(s:Float)  = { att( "arrowsize", s.toString ); this }
+  def arrowhead(s:Symbol) = { att( 'arrowhead, s ); this }
+  def arrowtail(s:Symbol) = { att( 'arrowtail, s ); this }
+  def arrowsize(s:Float)  = { att( 'arrowsize, s ); this }
 
 }

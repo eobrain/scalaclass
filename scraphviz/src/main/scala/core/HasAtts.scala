@@ -6,13 +6,23 @@
 
 package org.eamonn.scraphviz.core
 
+import HasAtts._
+
 trait HasAtts{
 
-	private var attList = List[String]()
+  private var attList = List[String]()
 
-	protected def att(name:String, value:String)  {
-		attList ::= name+"="+value
-	}
+  protected def att(name:Symbol, value:String)  {
+    attList ::= unquote(name)+"="+value
+  }
 
-	def atts = if(attList.isEmpty) "" else  "["+attList.mkString(",")+"]"
+  protected def att(name:Symbol, value:Symbol)  { att( name, unquote(value) ) }
+
+  protected def att(name:Symbol, value:Float)   { att( name, value.toString ) }
+
+  def atts = if(attList.isEmpty) "" else  "["+attList.mkString(",")+"]"
+}
+
+object HasAtts{
+  private def unquote(s:Symbol) = s.toString substring 1
 }
