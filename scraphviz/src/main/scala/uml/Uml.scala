@@ -6,10 +6,18 @@
 package org.eamonn.scraphviz.uml
 
 import core.DiGraph
-
+import Uml._
 
 class Uml extends DiGraph {
 	implicit def toUmlNode(s:String) = new UmlNode(this,s)
+
+	def abst(s:String) = {val n=new UmlNode(this,s); n color ISA; n}
+}
+
+object Uml{
+	def ISA  = "/dark23/1"
+	def HASA = "/dark23/2"
+	def USES = "/dark23/3"
 }
 
 

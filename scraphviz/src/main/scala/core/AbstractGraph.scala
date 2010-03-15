@@ -18,6 +18,9 @@ abstract class AbstractGraph(tag:String) {
 
 	private def basename = label.replaceAll("""\s""","_")
 
+	def | {}
+
+	def +- = edges.head.from
 
 	def add(n:AbstractNode){ nodes ::= n }
 	def add(e:AbstractEdge){ edges ::= e }

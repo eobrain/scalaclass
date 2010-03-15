@@ -7,13 +7,20 @@
 package org.eamonn.scraphviz.core
 
 /** an arc drawn between two nodes in a graph */
-abstract class AbstractEdge(g:AbstractGraph, from:AbstractNode, to:AbstractNode)
+abstract class AbstractEdge(g:AbstractGraph, 
+														val from:AbstractNode, 
+														to:AbstractNode)
 	extends HasAtts
 {
 
   g add this
 
-  /** Set the edge style.  Value must be one of "dashed", "dotted", "solid", "invis" and "bold" */
-  def style(s:Symbol)     = { att( 'style, s );     this }
+  /** Set the edge style.  Value must be one of "dashed", "dotted",
+    * "solid", "invis" and "bold" */
+  def style(s:Symbol) = { att( 'style, s );     this }
+
+	def label(s:String) = { att( 'label, s );     this }
+
+	def color(s:String) = { att( 'color, s ); att('fontcolor,s);    this }
 
 }

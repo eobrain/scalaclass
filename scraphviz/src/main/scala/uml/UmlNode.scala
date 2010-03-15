@@ -7,6 +7,7 @@ package org.eamonn.scraphviz.uml
 
 import core.{ DiNode, HasAtts }
 import HasAtts.unquote
+import Uml._
 
 class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
 
@@ -20,14 +21,12 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
 
   def |( m:String ) = new Member( name+"|"+m )
 
-  def <>-(that:UmlNode) = {
-    this -> that arrowtail 'diamond arrowhead 'vee
-    that
-  }
+  def <>-(that:UmlNode) = this -> that arrowtail 'diamond arrowhead 'vee color HASA
+
   def -<>(that:UmlNode) = {that <>- this; that}
-  
+
   def <|-(that:UmlNode) = {
-    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2
+    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2 color ISA
     that
   }
   
@@ -35,7 +34,7 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
   
   
   def -->(that:UmlNode) = {
-    (this -> that) arrowhead 'vee style 'dashed
+    (this -> that) arrowhead 'vee style 'dashed color USES
     that
   } 
   

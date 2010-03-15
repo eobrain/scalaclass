@@ -38,14 +38,42 @@ object CoreSpecs extends Specification {
     
     new DiGraph{
       label = "Small graph"
-      "main" -> "parse" -> "execute";
-      "main" -> "init";
-      "main" -> "cleanup";
+			"parse" -> "execute";
+      "main" -> "parse"
+			  |
+        +- -> "init";
+        +- -> "cleanup";
+        +- -> "printf";
       "execute" -> "make_string";
-      "execute" -> "printf"
+			  |
+        +- -> "printf"
+        +- -> "compare";
       "init" -> "make_string";
-      "main" -> "printf";
-      "execute" -> "compare";
+    }.png()
+    
+    out must exist
+  }
+  
+  "can put labels on edges" in {
+
+    val out = new File("edge_labels.png")
+    if(out.exists){
+      out.delete()
+    }
+    
+    new DiGraph{
+      label = "edge labels"
+			"parse" -> "execute";
+      ("main" -> "parse") label "from main"
+			  |
+        +- -> "init"  
+        +- -> "cleanup"
+        +- -> "printf" 
+      ("execute" -> "make_string") label "from execute"
+			  |
+        +- -> "printf"
+        +- -> "compare";
+      "init" -> "make_string";
     }.png()
     
     out must exist
