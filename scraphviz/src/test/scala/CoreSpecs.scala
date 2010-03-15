@@ -5,33 +5,51 @@
  */
 package org.eamonn.test_scraphviz
 
-import scraphviz.core.DiGraph
+import scraphviz.core.{ Graph, DiGraph }
 import org.specs._
 import java.io.File
 
 object CoreSpecs extends Specification {
 
+  "can handle undirected graph" in {
+    val out = new File("2(a).png")
+    if(out.exists){
+      out.delete()
+    }
+
+    new Graph{
+      label="2(a)"
+
+      "master" shape 'box
+      "HEAD" shape 'box
+      
+      "A" -- "B" -- "C" -- "master" -- "HEAD"
+    }.png()
+
+    out must exist
+  }
+
   "can handle dot manual Figure 1" in {
 
-		val out = new File("Small_graph.png")
-		if(out.exists){
-			out.delete()
-		}
-
-		new DiGraph{
-			label = "Small graph"
-			"main" -> "parse" -> "execute";
-			"main" -> "init";
-			"main" -> "cleanup";
-			"execute" -> "make_string";
-			"execute" -> "printf"
-			"init" -> "make_string";
-			"main" -> "printf";
-			"execute" -> "compare";
-		}.png()
-
-		out must exist
-	}
-
-
+    val out = new File("Small_graph.png")
+    if(out.exists){
+      out.delete()
+    }
+    
+    new DiGraph{
+      label = "Small graph"
+      "main" -> "parse" -> "execute";
+      "main" -> "init";
+      "main" -> "cleanup";
+      "execute" -> "make_string";
+      "execute" -> "printf"
+      "init" -> "make_string";
+      "main" -> "printf";
+      "execute" -> "compare";
+    }.png()
+    
+    out must exist
+  }
+  
+  
 }

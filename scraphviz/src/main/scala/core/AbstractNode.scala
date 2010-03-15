@@ -8,10 +8,12 @@ package org.eamonn.scraphviz.core
 
 abstract class AbstractNode( graph:AbstractGraph, name:String ) extends HasAtts{
 
-	graph add this
+  graph add this
 
-	def shape(sh:Symbol) = { att('shape,sh); this }
+  def shape(sh:Symbol) = { att('shape,sh); this }
 
-	override def toString = "\""+name+"\""
-	def declaration = this+" "+atts
+  def label(lab:String) = { att('label,lab); this }
+
+  override def toString = "\""+name+"\""
+  def declaration = this+" "+atts
 }

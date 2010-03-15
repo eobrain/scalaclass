@@ -5,31 +5,40 @@
  */
 package org.eamonn.scraphviz.uml
 
-import core.DiNode
+import core.{ DiNode, HasAtts }
+import HasAtts.unquote
 
-class UmlNode(graph:Uml,label:String) extends DiNode(graph,label){
+class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
 
-	shape('record)
+  shape('record)
 
-	def <>-(that:UmlNode) = {
-		this -> that arrowtail 'diamond arrowhead 'none
-		that
-	}
-	def -<>(that:UmlNode) = {that <>- this; that}
+  private val self = this
+  class Member(m1:String){
+    def /( m2:String ) = new Member(m1+"\\n"+m2)
+    def | { label( "{"+m1.replaceAll("""/""","""\\n""")+"}"); UmlNode.this }
+  } 
 
-	def <|-(that:UmlNode) = {
-		(that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2
-		that
-	}
+  def |( m:String ) = new Member( name+"|"+m )
 
-	def -|>(that:UmlNode) = { that <|- this ; that }
-
-
-	def -->(that:UmlNode) = {
-		(this -> that) arrowhead 'vee style 'dashed
-		that
-	} 
-
-	def <--(that:UmlNode) = { that --> this; that }
-
+  def <>-(that:UmlNode) = {
+    this -> that arrowtail 'diamond arrowhead 'vee
+    that
+  }
+  def -<>(that:UmlNode) = {that <>- this; that}
+  
+  def <|-(that:UmlNode) = {
+    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2
+    that
+  }
+  
+  def -|>(that:UmlNode) = { that <|- this ; that }
+  
+  
+  def -->(that:UmlNode) = {
+    (this -> that) arrowhead 'vee style 'dashed
+    that
+  } 
+  
+  def <--(that:UmlNode) = { that --> this; that }
+  
 }

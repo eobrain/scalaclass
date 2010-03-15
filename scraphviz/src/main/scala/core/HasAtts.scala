@@ -13,7 +13,7 @@ trait HasAtts{
   private var attList = List[String]()
 
   protected def att(name:Symbol, value:String)  {
-    attList ::= unquote(name)+"="+value
+    attList ::= unquote(name)+"=\""+value+"\""
   }
 
   protected def att(name:Symbol, value:Symbol)  { att( name, unquote(value) ) }

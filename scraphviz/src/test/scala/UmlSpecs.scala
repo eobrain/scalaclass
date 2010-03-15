@@ -13,20 +13,38 @@ import java.io.File
 object Specs  extends Specification {
 
 
-	"can create a UML document" in {
+  "can create a UML document" in {
+    
+    val out = new File("scraphviz.png")
+    new Uml{
+      label = "scraphviz"
 
-		val out = new File("scraphviz.png")
-		new Uml{
-			label = "scraphviz"
+      "UmlNode"|"\\|/&lt;&gt;-/-&lt;&gt;/&lt;\\|-/-\\|&gt;/--&gt;/&lt;--" |
 
-			"Uml" -|> "DiGraph" -|> "AbstractGraph" <|- "Graph" 
-			"AbstractNode" -<> "AbstractGraph" <>- "AbstractEdge"
-			"Edge" -|> "AbstractEdge" -|> "HasAtts" <|- "AbstractNode" <|- "Node"
-			"DiEdge" -|> "AbstractEdge"
-			"UmlNode" -|> "DiNode" -|> "AbstractNode"
-		}.png()
+      "AbstractEdge"|"style"|
 
-		out must exist
-	}
+      "AbstractGraph" | "add/dot/png" |
+
+      "AbstractNode"|"shape/label/toString/declaration"|
+
+      "DiEdge"|"toString/arrowhead/arrowtail/arrowsize"|
+
+      "DiNode"|"-&gt;"|
+
+      "Edge"|"toString"|
+
+      "HasAtts"|"atts"|
+
+      "Node"|"--"|
+      
+      "Uml" -|> "DiGraph" -|> "AbstractGraph" <|- "Graph" 
+      "AbstractNode" -<> "AbstractGraph" <>- "AbstractEdge"
+      "Edge" -|> "AbstractEdge" -|> "HasAtts" <|- "AbstractNode" <|- "Node"
+      "DiEdge" -|> "AbstractEdge"
+      "UmlNode" -|> "DiNode" -|> "AbstractNode"
+    }.png()
+    
+    out must exist
+  }
 
 }
