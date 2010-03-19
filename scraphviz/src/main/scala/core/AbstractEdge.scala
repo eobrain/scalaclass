@@ -23,4 +23,6 @@ abstract class AbstractEdge(g:AbstractGraph,
 
 	def color(s:String) = { att( 'color, s ); att('fontcolor,s);    this }
 
+	def fontsize(s:Float) = { att( 'fontsize, s );     this }
+
 }

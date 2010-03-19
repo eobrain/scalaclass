@@ -6,8 +6,8 @@
 
 package org.eamonn.scraphviz.core
 
-class DiGraph extends AbstractGraph("digraph"){
-
+trait DiGraph extends AbstractGraph{
+	override var tag = "digraph"
 	implicit def toDiNode(s:String) = new DiNode(this,s)
 }
 

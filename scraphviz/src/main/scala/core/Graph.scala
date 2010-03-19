@@ -6,7 +6,8 @@
 
 package org.eamonn.scraphviz.core
 
-class Graph extends AbstractGraph("graph"){
+trait Graph extends AbstractGraph{
+	override var tag = "graph"
 
 	implicit def toNode(s:String) = new Node(this,s)
 }

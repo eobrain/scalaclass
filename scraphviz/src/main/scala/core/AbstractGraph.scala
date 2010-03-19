@@ -9,7 +9,9 @@ package org.eamonn.scraphviz.core
 import java.io.{ FileWriter, InputStream }
 import AbstractGraph._
 
-abstract class AbstractGraph(tag:String) {
+trait AbstractGraph {
+
+	var tag:String
 
 	private var nodes = List[AbstractNode]()
 	private var edges = List[AbstractEdge]()
@@ -34,6 +36,7 @@ abstract class AbstractGraph(tag:String) {
 		for( edge <- edges ){
 			out write "  "+edge+"\n"
 		}
+		out write "label=\""+label+"\"\n"
 		out.write("}\n")
 		out.close()
 	}

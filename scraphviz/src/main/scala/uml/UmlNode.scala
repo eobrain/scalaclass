@@ -12,6 +12,7 @@ import Uml._
 class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
 
   shape('record)
+	fontsize(10)
 
   private val self = this
   class Member(m1:String){
@@ -21,12 +22,12 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
 
   def |( m:String ) = new Member( name+"|"+m )
 
-  def <>-(that:UmlNode) = this -> that arrowtail 'diamond arrowhead 'vee color HASA
+  def <>-(that:UmlNode) = this -> that arrowtail 'diamond arrowhead 'vee color HASA fontsize 8
 
   def -<>(that:UmlNode) = {that <>- this; that}
 
   def <|-(that:UmlNode) = {
-    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2 color ISA
+    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2 color ISA fontsize 8
     that
   }
   
@@ -34,10 +35,10 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
   
   
   def -->(that:UmlNode) = {
-    (this -> that) arrowhead 'vee style 'dashed color USES
+    (this -> that) arrowhead 'vee style 'dashed color USES fontsize 8
     that
   } 
   
   def <--(that:UmlNode) = { that --> this; that }
-  
+
 }
