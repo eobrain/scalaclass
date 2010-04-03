@@ -11,4 +11,6 @@ class Matrix(info: ProjectInfo) extends DefaultProject(info){
 
   val specs = "org.specs" % "specs" % "1.4.+"
 
+  //override def compileOptions = super.compileOptions ++ Seq(Unchecked)
+
 }

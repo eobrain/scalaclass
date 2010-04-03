@@ -12,23 +12,6 @@ import Matrix._
 import Row._
 import Seq.Projection
 
-/** Methods that are added to List[List[Double]] by an implicit conversion */
-case class RichMatrix(m:Matrix){
-
-  def T = transpose(m)
-
-  def *(that:RichMatrix) = mXm( this.m, that.m )
-
-  def apply(i:Int,j:Int) = m(i)(j)
-
-  def rowCount = m.length
-  def colCount = m.head.length
-
-  def toStr = "\n"+m.map{ 
-    _.map{"\t" + _}.reduceLeft(_ + _)+"\n"
-  }.reduceLeft(_ + _)
-
-}
 
 
 object Matrix{
@@ -37,44 +20,27 @@ object Matrix{
   /** A convenient alias */
   type Matrix = List[Row]
 
-  def apply( rowCount:Int, colCount:Int )( f:(Int,Int) => Double ) = (
-      for(i <- 1 to rowCount) yield 
-	( for( j <- 1 to colCount) yield f(i,j) ).toList
-    ).toList
-
-  def transpose(m:Matrix):Matrix = 
-    if(m.head.isEmpty) Nil else m.map(_.head) :: transpose(m.map(_.tail))
-
-  def mXv(m:Matrix, v:Row) = {
-    requireEquals( rowCount(m), v.length )
-    m.map{ dotProd(_,v) } reduceLeft ( _ + _ )
-  }
-
-  def mXm(m1:Matrix,m2:Matrix) = {
-    requireEquals( colCount(m1), rowCount(m2) )
-    ensure(
-      (m:Matrix) => rowCount(m)==rowCount(m1) && colCount(m)==colCount(m2),
-
-      for( m1row <- m1 ) yield
-	for( m2col <- transpose(m2) ) yield
-	  dotProd( m1row, m2col )
-
-
-    )
-      
-  }
-
-  def rowCount(m:Matrix) = m.length
-  def colCount(m:Matrix) = m.head.length
-
-
   /** effectively add RichMatrix methods to List[List[Double]] */
   implicit def pimp1(m:Matrix) = new RichMatrix(m)
 
   implicit def pimp2(m:List[Projection[Double]]) 
     = new RichMatrix(m.map{_.toList})
-  implicit def pimp1(m:Projection[List[Double]]) 
+  implicit def pimp3(m:Projection[List[Double]]) 
     = new RichMatrix(m.toList)
-  implicit def pimp2(m:Projection[Projection[Double]]) 
+  implicit def pimp4(m:Projection[Projection[Double]]) 
     = new RichMatrix(m.map{_.toList}.toList)
+
+  implicit def pimp5(m:Matrix) = new JamaMatrix( m, null )
+
+  implicit def pimp6(jm:JamaMatrix) = new RichMatrix(jm.asMatrix)
+
+  implicit def pimp7(jm:JamaMatrix) = jm.asMatrix
+
+  def apply( rowCount:Int, colCount:Int )( f:(Int,Int) => Double ) = (
+      for(i <- 1 to rowCount) yield 
+	( for( j <- 1 to colCount) yield f(i,j) ).toList
+    ).toList
+
+
+
 }

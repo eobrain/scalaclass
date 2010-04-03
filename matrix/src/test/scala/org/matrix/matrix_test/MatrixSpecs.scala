@@ -11,12 +11,38 @@ import util.Contract._
 import matrix.Matrix
 import matrix.Row._
 import org.specs._
+import org.specs.matcher.Matcher
 import Matrix._
 import Math.random
 
 object  MatrixSpecs extends Specification {
   checkPreconditions = true
   checkPostconditions = true
+
+  case class beApproxEqual(a: Matrix) extends Matcher[Matrix]() {
+    def apply(b: => Matrix) = 
+      if(a.rowCount != b.rowCount)
+	(false, null, ""+a+" has a different number of rows than "+b)
+      else if(a.colCount != b.colCount)
+	(false, null, ""+a+" has a different number of columns than "+b)
+      else{
+	var tot = 0.0
+        a.foreachElement{ tot += _ }
+        b.foreachElement{ tot += _ }
+        val mean = tot/(2*a.rowCount*b.rowCount)
+	((a zip b).forall{ rowPair: (Row,Row) =>
+	  (rowPair._1 zip rowPair._2).forall{ itemPair: (Double,Double) =>
+	    val (aItem,bItem) = itemPair
+	    println("comparing "+aItem+" and "+bItem+": "+(aItem==bItem || ((aItem-bItem)/mean).abs < 0.0001))
+
+	    aItem==bItem || ((aItem-bItem)/mean).abs < 0.0001
+	  }
+	 },
+         ""+a+" is approximately equal to "+b,
+         ""+a+" is different to "+b
+       )
+      }
+  }
 
   val M = List(
     List( 1.0, 2.0, 3.0 ),
@@ -107,4 +133,125 @@ object  MatrixSpecs extends Specification {
     A(5,15) must_== 1.0
   }
 
+  "You can take the inverse of a 1x1 matrix" in {
+    List(List( 2.0 )).inverse.asMatrix  must_==  List(List( 0.5 )) 
+    List(List( 0.5 )).inverse.asMatrix  must_==  List(List( 2.0 ))
+  }
+
+  "You can take the inverse of a 2x2 matrix" in {
+
+    val A =   List(List(  1.0, -1.0 ),
+		   List( -1.0, -1.0 ))
+    val Am1 = List(List(  0.5, -0.5 ),
+		   List( -0.5, -0.5 ))
+    
+    A.inverse.asMatrix    must_==  Am1
+    Am1.inverse.asMatrix  must_==  A
+
+    val I =   List(List( 1.0, 0.0 ),
+		   List( 0.0, 1.0 ))
+
+    A * A.inverse  must_==  I
+
+  }
+
+  "You can take the inverse of a 3x3 matrix" in {
+
+    val A =   List(List(  2.0,  0.0,  4.0 ),
+		   List(  5.0,  1.0,  7.0 ),
+		   List(  1.0,  0.0,  1.0 ))
+    val Am1 = List(List( -0.5,  0.0,  2.0 ),
+		   List( -1.0,  1.0, -3.0 ),
+		   List(  0.5,  0.0, -1.0 ))
+
+    assert( A.det != 0 )
+    
+    A.inverse.asMatrix    must beApproxEqual( Am1 )
+    Am1.inverse.asMatrix  must beApproxEqual( A )
+
+    val I =   List(List( 1.0, 0.0, 0.0 ),
+		   List( 0.0, 1.0, 0.0 ),
+		   List( 0.0, 0.0, 1.0 ) )
+
+    A * A.inverse.asMatrix  must beApproxEqual(I)
+
+  }
+
+  "You can find the determinant of a 2x2 matrix" in {
+    val (a,b,c,d) = ( 111.0, 222.0, 333.0, 444.0 )
+    val A = List( List(a,b), List(c,d) )
+
+    A.det must_== a*d - b*c
+  }
+
+  "You can find the determint of a 4x4 matrix" in {
+    //See http://www.wolframalpha.com/input/?i=determinant[+{+{2%2C0%2C1%2C1}%2C{1%2C1%2C1%2C1}%2C+{1%2C0%2C1%2C1}%2C+{1%2C1%2C1%2C0}+}]
+
+    val A =   List(List(  2.0,  0.0,  1.0,  1.0 ),
+		   List(  1.0,  1.0,  1.0,  1.0 ),
+		   List(  1.0,  0.0,  1.0,  1.0 ),
+		   List(  1.0,  1.0,  1.0,  0.0 ))
+    A.det must_== -1
+  }
+
+  "You can take the inverse of a 4x4 matrix" in {
+
+    //See http://www.wolframalpha.com/input/?i=invert[+{+{2%2C0%2C1%2C1}%2C{1%2C1%2C1%2C1}%2C+{1%2C0%2C1%2C1}%2C+{1%2C1%2C1%2C0}+}]
+
+    val A =   List(List(  2.0,  0.0,  1.0,  1.0 ),
+		   List(  1.0,  1.0,  1.0,  1.0 ),
+		   List(  1.0,  0.0,  1.0,  1.0 ),
+		   List(  1.0,  1.0,  1.0,  0.0 ))
+    val Am1 = List(List(  1.0, -0.0, -1.0,  0.0 ),
+		   List(  0.0,  1.0, -1.0,  0.0 ),
+		   List( -1.0, -1.0,  2.0,  1.0 ),
+		   List(  0.0,  1.0,  0.0, -1.0 ))
+
+    println( "A.det="+A.det)
+
+    assert( A.det != 0 )
+    
+    A.inverse.asMatrix   must_==  Am1
+    Am1.inverse.asMatrix  must_==  A
+
+    val I =   List(List( 1.0, 0.0, 0.0, 0.0 ),
+		   List( 0.0, 1.0, 0.0, 0.0 ),
+		   List( 0.0, 0.0, 1.0, 0.0 ),
+		   List( 0.0, 0.0, 0.0, 1.0 ) )
+
+    A * A.inverse  must beApproxEqual(I)
+
+  }
+
+
+  "can calculate the minor matrix of a 2x2 matrix" in {
+    val A =   List(List( 1.0, 2.0 ),
+		   List( 3.0, 4.0 ))
+
+    A.minor(0,0) must_== List(List(4.0))
+    A.minor(0,1) must_== List(List(3.0))
+    A.minor(1,0) must_== List(List(2.0))
+    A.minor(1,1) must_== List(List(1.0))
+  }
+
+  "can calculate the minor matrix of a 3x3 matrix" in {
+    val A =   List(List(  2.0,  0.0,  4.0 ),
+		   List(  5.0,  1.0,  7.0 ),
+		   List(  1.0,  0.0,  1.0 ))
+    A.minor(0,0) must_== List(List(  1.0,  7.0 ),
+			      List(  0.0,  1.0 ))
+    A.minor(2,1) must_== List(List(  2.0,  4.0 ),
+			      List(  5.0,  7.0 ))
+    A.minor(1,2) must_== List(List(  2.0,  0.0 ),
+			      List(  1.0,  0.0 ))
+  }
+  "can calculate the minor matrix of a 4x4 matrix" in {
+    val A =   List(List(  2.0,  0.0,  1.0,  3.0 ),
+		   List(  7.0,  1.0,  1.0,  1.0 ),
+		   List(  1.0,  0.0,  1.0,  1.0 ),
+		   List(  6.0,  1.0,  1.0,  9.0 ))
+    A.minor(2,1) must_==  List(List(  2.0,  1.0,  3.0 ),
+			       List(  7.0,  1.0,  1.0 ),
+			       List(  6.0,  1.0,  9.0 ))
+  }
 }
