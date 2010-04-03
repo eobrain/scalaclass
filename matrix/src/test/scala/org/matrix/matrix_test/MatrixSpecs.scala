@@ -33,8 +33,6 @@ object  MatrixSpecs extends Specification {
 	((a zip b).forall{ rowPair: (Row,Row) =>
 	  (rowPair._1 zip rowPair._2).forall{ itemPair: (Double,Double) =>
 	    val (aItem,bItem) = itemPair
-	    println("comparing "+aItem+" and "+bItem+": "+(aItem==bItem || ((aItem-bItem)/mean).abs < 0.0001))
-
 	    aItem==bItem || ((aItem-bItem)/mean).abs < 0.0001
 	  }
 	 },
@@ -254,4 +252,64 @@ object  MatrixSpecs extends Specification {
 			       List(  7.0,  1.0,  1.0 ),
 			       List(  6.0,  1.0,  9.0 ))
   }
+
+  "can solve simultaneous linear equations" in {
+    // x + y = 10
+    // x - y = 2
+    // expected solution:
+    val A = List(List(1.0,  1.0),
+                 List(1.0, -1.0))
+    val b = List(10.0, 2.0).T
+    val x = A solve b
+    x.asMatrix must_== List(6.0, 4.0).T
+
+    //val ax = A * x
+    //val approxZero = pimp1(ax) - b
+    val approxZero = pimp1(A * x) - b 
+    approxZero.normInf must be_<(0.0001)
+  }
+
+  "can solve simultaneous linear equations using LU decomposition" in {
+    // x + y = 10
+    // x - y = 2
+    // expected solution:
+    val A = List(List(1.0,  1.0),
+                 List(1.0, -1.0))
+    val b = List(10.0, 2.0).T
+    val x = A solveLU b
+    x.asMatrix must_== List(6.0, 4.0).T
+
+    //val ax = A * x
+    //val approxZero = pimp1(ax) - b
+    val approxZero = pimp1(A * x) - b 
+    approxZero.normInf must be_<(0.0001)
+  }
+
+  def time[T]( label:String, doit : => T ) = {
+    val start = System.currentTimeMillis
+    val result = doit
+    val end = System.currentTimeMillis
+    println( label+": "+(end-start)+" ms" )
+    result
+  }
+
+  "can solve big systems of equations" in {
+    val A = Matrix(1000,1000) { (i:Int,j:Int) => random }
+    val b = Matrix(1,1000) { (i:Int,j:Int) => random }.T
+
+    {
+      val x = time( "solve",  A solve b )
+      val approxZero = pimp1(A * x) - b 
+      approxZero.normInf must be_<(0.0001)
+    }
+
+    {
+      val x = time( "LU",  A solveLU b )
+      val approxZero = pimp1(A * x) - b 
+      approxZero.normInf must be_<(0.0001)
+    }
+
+  }
+
+
 }

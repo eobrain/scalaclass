@@ -17,20 +17,23 @@ case class RichMatrix(m:Matrix){
   def T = transpose(m)
 
   /** Matrix addition */
-  def +(that:RichMatrix):Matrix = add( this.m, that.m )
+  def +(that:RichMatrix) = add( this.m, that.m )
+
+  /** Matrix subtraction */
+  def -(that:RichMatrix) = subtract( this.m, that.m )
 
   /** Matrix multiplication */
-  def *(that:RichMatrix):Matrix = mXm( this.m, that.m )
+  def *(that:RichMatrix) = mXm( this.m, that.m )
 
   /** Scalar multiplication */
-  def *(s:Double):Matrix = mXs( this.m, s:Double )
+  def *(s:Double) = mXs( this.m, s:Double )
 
-  def unary_- :Matrix = mXs( this.m, -1.0 )
+  def unary_- = mXs( this.m, -1.0 )
 
-  def beside(right:RichMatrix):Matrix = this.m.zip( right.m ).map{ t:(Row,Row) =>
-    t._1 ::: t._2 }
+  def beside(right:RichMatrix) 
+    = this.m.zip( right.m ).map{ t:(Row,Row) => t._1 ::: t._2 }
 
-  def above(below:RichMatrix):Matrix = this.m ::: below.m
+  def above(below:RichMatrix) = this.m ::: below.m
 
   def minor(i:Int, j:Int) = minorMat(m,i,j)
 
@@ -80,11 +83,15 @@ object RichMatrix{
       
   }
 
-  private def add(m1:Matrix,m2:Matrix):Matrix = m1.zip( m2 ).map{ rows:(Row,Row) =>
+  private def add(m1:Matrix,m2:Matrix) = m1.zip( m2 ).map{ rows:(Row,Row) =>
     rows._1.zip( rows._2 ).map{ items:(Double,Double) =>
       items._1 + items._2
-      //val (thisItem,thatItem) = _
-      //thisItem + thatItem
+    }
+  }
+
+  private def subtract(m1:Matrix,m2:Matrix) = m1.zip( m2 ).map{ rows:(Row,Row) =>
+    rows._1.zip( rows._2 ).map{ items:(Double,Double) =>
+      items._1 - items._2
     }
   }
 
@@ -93,7 +100,7 @@ object RichMatrix{
 
   
 
-  private def minorMat(mat:Matrix, i:Int, j:Int):Matrix = {
+  private def minorMat(mat:Matrix, i:Int, j:Int) = {
     drop1(mat,i).map{ drop1(_,j) }
   }
 

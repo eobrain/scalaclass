@@ -6,12 +6,20 @@ class JamaMatrix(m:Matrix, jm:Jama.Matrix) {
 
   private var cachedJm = jm
   private var cachedM  = m
+  private var cachedLU:Jama.LUDecomposition = null
 
   private def asJm = {
     if(cachedJm==null){
       cachedJm = new Jama.Matrix( m.map{_.toArray}.toArray )
     }
     cachedJm
+  }
+
+  private def asLU = {
+    if(cachedLU==null){
+      cachedLU = new Jama.LUDecomposition( asJm )
+    }
+    cachedLU
   }
 
   def asMatrix = {
@@ -25,21 +33,21 @@ class JamaMatrix(m:Matrix, jm:Jama.Matrix) {
 
   def inverse = new JamaMatrix( null, asJm.inverse )
 
+  def solve( b:Matrix ) = new JamaMatrix( 
+    null,
+    asJm solve new Jama.Matrix( b.map{_.toArray}.toArray )
+  )
+
+  def solveLU( b:Matrix ) = new JamaMatrix( 
+    null,
+    asLU solve new Jama.Matrix( b.map{_.toArray}.toArray )
+  )
+
+  def normInf = asJm.normInf
+
   override def toString = {
     "\n[ " + asMatrix.map{ "["+ _.mkString("\t")+"]" }.mkString("\n  ")+" ]\n"
   }
-
-  //override def equals(obj:Any) = throw new Error 
-  /* obj match {
-    case that:Matrix => {
-      println("case Matrix: "+this+"=="+that)
-      asMatrix == that
-    }
-    case _ => {
-      println(this+"=="+obj)
-      super.equals(obj)
-    }
-  }*/
 
 }
 
