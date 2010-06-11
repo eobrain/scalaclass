@@ -8,9 +8,6 @@ package org.eamonn.scraphviz.core
 
 class Node( graph:Graph, name:String ) extends AbstractNode(graph,name){
 
-  def --(that:Node) = {
-    new Edge(graph,this,that)
-    that
-  }
+  def --(that:Node) = new Edge(graph,this,that)
 
 }

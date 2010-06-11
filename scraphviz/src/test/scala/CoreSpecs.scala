@@ -23,7 +23,10 @@ object CoreSpecs extends Specification {
       "master" shape 'box
       "HEAD" shape 'box
       
-      "A" -- "B" -- "C" -- "master" -- "HEAD"
+      "A" -- "B"
+			"B" -- "C"
+			"C" -- "master" 
+			"master" -- "HEAD"
     }.png()
 
     out must exist

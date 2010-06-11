@@ -18,6 +18,8 @@ trait AbstractGraph {
 
 	protected var label = "graph"
 
+	var rankdir = 'TB
+
 	private def basename = label.replaceAll("""\s""","_")
 
 	def | {}
@@ -30,13 +32,14 @@ trait AbstractGraph {
 	def dot() {
 		val out = new FileWriter(basename+".dot")
 		out write tag+" G {\n"
-		for( node <- nodes ){
+		for( node <- nodes.reverse ){
 			out write "  "+node.declaration+"\n"
 		}
 		for( edge <- edges ){
 			out write "  "+edge+"\n"
 		}
 		out write "label=\""+label+"\"\n"
+		out write "rankdir="+HasAtts.unquote(rankdir)+"\n"
 		out.write("}\n")
 		out.close()
 	}

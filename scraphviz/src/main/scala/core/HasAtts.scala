@@ -22,8 +22,9 @@ trait HasAtts{
 
   def atts = if(attList.isEmpty) "" else  "["+attList.mkString(",")+"]"
 
+	def isEmpty = attList.isEmpty
 }
 
 object HasAtts{
-  private def unquote(s:Symbol) = s.toString substring 1
+  def unquote(s:Symbol) = s.toString substring 1
 }

@@ -17,7 +17,7 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
   private val self = this
   class Member(m1:String){
     def /( m2:String ) = new Member(m1+"\\n"+m2)
-    def | { label( "{"+m1.replaceAll("""/""","""\\n""")+"}"); UmlNode.this }
+    def | { label( m1.replaceAll("""/""","""\\n""") ); UmlNode.this }
   } 
 
   def |( m:String ) = new Member( name+"|"+m )
@@ -34,11 +34,10 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
   def -|>(that:UmlNode) = { that <|- this ; that }
   
   
-  def -->(that:UmlNode) = {
-    (this -> that) arrowhead 'vee style 'dashed color USES fontsize 8
-    that
-  } 
+  def -->(that:UmlNode) = (this -> that) arrowhead 'vee style 'dashed color USES fontsize 8
   
   def <--(that:UmlNode) = { that --> this; that }
+
+	override def label(lab:String) =  super.label( if(graph.rankdir=='LR) lab else "{"+lab+"}" ) 
 
 }
