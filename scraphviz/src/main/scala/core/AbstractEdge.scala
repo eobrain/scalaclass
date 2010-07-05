@@ -25,4 +25,9 @@ abstract class AbstractEdge(g:AbstractGraph,
 
 	def fontsize(s:Float) = { att( 'fontsize, s );     this }
 
+  def headlabel(s:String) = { att( 'headlabel, s ); this }
+
+  def taillabel(s:String) = { att( 'taillabel, s ); this }
+
+  def constraint(s:Boolean) = { att( 'constraint, s ); this }
 }

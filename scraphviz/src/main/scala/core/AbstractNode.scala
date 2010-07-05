@@ -12,6 +12,8 @@ abstract class AbstractNode( graph:AbstractGraph, name:String ) extends HasAtts{
 
   def shape(sh:Symbol) = { att('shape,sh); this }
 
+  def style(sh:Symbol) = { att('style,sh); this }
+
   def label(lab:String) = { att('label,lab); this }
 
 	def color(s:String) = { att( 'color, s ); att('fontcolor,s);    this }

@@ -22,21 +22,35 @@ class UmlNode(graph:Uml,name:String) extends DiNode(graph,name){
 
   def |( m:String ) = new Member( name+"|"+m )
 
-  def <>-(that:UmlNode) = this -> that arrowtail 'diamond arrowhead 'vee color HASA fontsize 8
+  def <>-(that:UmlNode) = this -> that arrowtail 'odiamond arrowhead 'vee color HASA fontsize 8
+  def #-(that:UmlNode) = this -> that arrowtail 'diamond arrowhead 'vee color HASA fontsize 8
+  def <>-*(that:UmlNode) = ( this <>- that) taillabel "1" headlabel "*"
+  def *<>-*(that:UmlNode) = ( this <>- that) taillabel "*" headlabel "*"
+  def *#-*(that:UmlNode) = ( this #- that) taillabel "*" headlabel "*"
+  def #-*(that:UmlNode) = ( this #- that) taillabel "1" headlabel "*"
 
   def -<>(that:UmlNode) = {that <>- this; that}
+  def -#(that:UmlNode) = {that #- this; that}
+  def *-<>(that:UmlNode) = {that <>-* this; that}
+  def *-#(that:UmlNode) = {that #-* this; that}
+  def *-<>*(that:UmlNode) = {that *<>-* this; that}
+  def *-#*(that:UmlNode) = {that *#-* this; that}
 
   def <|-(that:UmlNode) = {
-    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2 color ISA fontsize 8
+    (that -> this) arrowhead 'onormal arrowtail 'none arrowsize 2 color ISA fontsize 8 label "is a"
     that
   }
   
   def -|>(that:UmlNode) = { that <|- this ; that }
   
   
-  def -->(that:UmlNode) = (this -> that) arrowhead 'vee style 'dashed color USES fontsize 8
+  def -->(that:UmlNode)  = (this -> that) arrowhead 'vee style 'dashed color USES fontsize 8
+  def -->*(that:UmlNode) = (this --> that) taillabel "1" headlabel "*"
+  def *-->*(that:UmlNode) = (this --> that) taillabel "*" headlabel "*"
   
-  def <--(that:UmlNode) = { that --> this; that }
+  def <--(that:UmlNode)  = that --> this
+  def *<--(that:UmlNode) = that -->* this
+  def *<--*(that:UmlNode) = that *-->* this
 
 	override def label(lab:String) =  super.label( if(graph.rankdir=='LR) lab else "{"+lab+"}" ) 
 

@@ -20,6 +20,8 @@ trait HasAtts{
 
   protected def att(name:Symbol, value:Float)   { att( name, value.toString ) }
 
+  protected def att(name:Symbol, value:Boolean)   { att( name, value.toString ) }
+
   def atts = if(attList.isEmpty) "" else  "["+attList.mkString(",")+"]"
 
 	def isEmpty = attList.isEmpty
